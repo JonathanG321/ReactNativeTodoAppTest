@@ -1,28 +1,17 @@
+import { useContext, useState } from 'react';
 import { Button, Modal, Text, TextInput, View } from 'react-native';
-import { Todo } from '../utils/types';
 import { checkStringExists } from '../utils/dataUtils';
+import { ListContext } from '../context/ListContext';
 
 interface TodoModal {
   modalVisible: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  title: string;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  description: string;
-  setDescription: React.Dispatch<React.SetStateAction<string>>;
-  list: Todo[];
-  setList: React.Dispatch<React.SetStateAction<Todo[]>>;
 }
 
-export function AddTodoModal({
-  modalVisible,
-  setModalVisible,
-  title,
-  setTitle,
-  description,
-  setDescription,
-  list,
-  setList,
-}: TodoModal) {
+export function AddTodoModal({ modalVisible, setModalVisible }: TodoModal) {
+  const { list, setList } = useContext(ListContext);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   return (
     <Modal
       animationType="slide"
@@ -53,6 +42,8 @@ export function AddTodoModal({
             onPress={() => {
               if (checkStringExists(title)) return;
               setList([...list, { title, description, completed: false }]);
+              setTitle('');
+              setDescription('');
               setModalVisible(!modalVisible);
             }}
           />

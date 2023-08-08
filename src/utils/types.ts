@@ -7,7 +7,6 @@ export interface Todo {
 export type RootStackParamList = {
   TodoList: undefined;
   TodoItem: {
-    item: Todo;
     index: number;
   };
 };
