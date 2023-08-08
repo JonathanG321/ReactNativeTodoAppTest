@@ -1,5 +1,5 @@
 import { Button, Modal, Text, TextInput, View } from 'react-native';
-import { Todo } from '../../App';
+import { Todo } from '../utils/types';
 import { checkStringExists } from '../utils/dataUtils';
 
 interface TodoModal {

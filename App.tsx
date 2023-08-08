@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import TodoList from './src/pages/TodoList';
 import TodoItem from './src/pages/TodoItem';
+import { RootStackParamList, Todo } from './src/utils/types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export interface Todo {
-  title: string;
-  description: string;
-  completed: boolean;
-}
+export const ListContext = React.createContext({
+  list: [] as Todo[],
+  setList: (() => undefined) as Dispatch<SetStateAction<Todo[]>>,
+});
 
 export default function App() {
   const [list, setList] = useState<Todo[]>([]);
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="ListPage">{(props) => <TodoList {...props} list={list} setList={setList} />}</Stack.Screen>
-        <Stack.Screen name="ItemPage" initialParams={{ list, setList }}>
-          {(props) => <TodoItem {...props} list={list} setList={setList} item={list[0]} index={0} />}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ListContext.Provider value={{ list, setList }}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="TodoList">
+          <Stack.Screen name="TodoList" component={TodoList} options={{ title: 'List' }} />
+          <Stack.Screen name="TodoItem" component={TodoItem} options={{ title: 'Details' }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ListContext.Provider>
   );
 }

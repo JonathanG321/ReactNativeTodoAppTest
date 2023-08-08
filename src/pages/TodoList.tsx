@@ -1,19 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import classnames from 'classnames';
-import { Todo } from '../../App';
+import { StatusBar } from 'expo-status-bar';
 import { AddTodoModal } from '../components/AddTodoModal';
+import { RootStackParamList, Todo } from '../utils/types';
+import { ListContext } from '../../App';
 
-interface TodoList {
-  navigation: {
-    navigate: any;
-  };
-  list: Todo[];
-  setList: React.Dispatch<React.SetStateAction<Todo[]>>;
-}
+type Props = NativeStackScreenProps<RootStackParamList, 'TodoList'>;
 
-export default function TodoList({ navigation: { navigate }, list, setList }: TodoList) {
+export default function TodoList({ navigation: { navigate } }: Props) {
+  const { list, setList } = useContext(ListContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -29,14 +26,17 @@ export default function TodoList({ navigation: { navigate }, list, setList }: To
             <Text>Empty!</Text>
           </View>
         }
-        renderItem={({ item, index, separators }) => (
-          <Pressable onPress={() => navigate('ItemPage', { listItem: item, index })}>
-            <View className="flex flex-row justify-between">
-              <Text className={classnames({ 'text-green-600': item.completed })}>{item.title}</Text>
-              <View className="flex flex-row"></View>
-            </View>
-          </Pressable>
-        )}
+        renderItem={({ item, index, separators }) => {
+          console.log({ item });
+          return (
+            <Pressable onPress={() => navigate('TodoItem', { item, index })}>
+              <View className="flex flex-row justify-between">
+                <Text className={classnames({ 'text-green-600': item.completed })}>{item.title}</Text>
+                <View className="flex flex-row"></View>
+              </View>
+            </Pressable>
+          );
+        }}
       />
       <Pressable onPress={() => setModalVisible(true)}>
         <Text className="text-xl">Add Todo</Text>

@@ -1,15 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
+import { useContext, useState } from 'react';
 import { Button, Text, TextInput, View } from 'react-native';
-import { Todo } from '../../App';
-import { useState } from 'react';
-interface Props {
-  item: Todo;
-  setList: (arg: Todo[]) => void;
-  list: Todo[];
-  index: number;
-}
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { StatusBar } from 'expo-status-bar';
+import { RootStackParamList } from '../utils/types';
+import { ListContext } from '../../App';
 
-export default function TodoItem({ item, setList, list, index }: Props) {
+type Props = NativeStackScreenProps<RootStackParamList, 'TodoItem'>;
+
+export default function TodoItem({
+  route: {
+    params: { index, item },
+  },
+}: Props) {
+  const { list, setList } = useContext(ListContext);
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
